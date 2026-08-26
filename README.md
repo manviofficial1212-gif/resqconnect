@@ -1,88 +1,77 @@
-# ResQConnect Ops
+# 🚨 ResQConnect Ops — Zero-Latency Disaster Relief & Dispatch Grid
 
-Design and build a clean, high-utility landing page for "ResQConnect" — a real-time emergency disaster response & volunteer dispatch platform.
+> **Synchronized disaster response platform connecting relief coordinators, field rescue squads, and emergency supply hubs during acute crisis events.**
 
-Avoid generic AI aesthetics: DO NOT use purple/pink gradients, floating 3D glass blobs, or cheesy marketing copy. Make it look like a mission-critical, human-engineered command operations tool (inspired by Linear, Vercel, and Palantir dashboards).
+---
 
-Page Structure & Components:
+## 📌 Overview
 
-1. Top Navigation Bar:
+During natural disasters (such as floods, cyclones, and urban crises), relief efforts suffer from severe communication bottlenecks: duplicate deliveries, untracked distress calls, and lack of real-time visibility on ground resources.
 
-   - Left: Minimalist logo with an alert radar icon + "ResQConnect" with a live status badge: "● LIVE DISPATCH SYSTEM ACTIVE" (green pulsing dot).
+**ResQConnect** solves this with an interactive, low-latency command grid:
+- **Civilian SOS Intake:** Instant mobile emergency request system with auto-calibrated GPS capture.
+- **Interactive Operations Map:** Real-time geospatial tracking of priority crisis zones with color-coded severity markers.
+- **Volunteer Kanban Hub:** A 4-stage allocation board ensuring single-claim dispatch locking to eliminate duplicate runs.
 
-   - Center: Quick links: "Live SOS Map", "Volunteer Hub", "Inventory Tracker", "Protocol Docs".
+---
 
-   - Right: "Report Emergency (SOS)" high-contrast red button + "Volunteer Portal" secondary button.
+## ⚡ Key Features
 
-2. Live Crisis Ticker / Status Bar:
+* **🛰️ Live Incident Mapping:** Fullscreen interactive GIS map with clustering, urgency filtering (Critical / High / Moderate), and instant sector status.
+* **📍 Fast SOS Broadcast:** Lightweight intake console capturing required aid categories (Medical, Rations, Rescue, Water) and headcount.
+* **🔒 Zero-Collision Dispatch:** Real-time task-locking workflow transitioning tasks from `Open Demands` $\rightarrow$ `Claimed & En Route` $\rightarrow$ `Delivered` $\rightarrow$ `Resolved`.
+* **📱 Ultra-Responsive Tactical Dark UI:** Designed using Tailwind CSS and Zinc dark tokens for high-contrast visibility in low-light emergency environments.
 
-   - A slim, dark ticker strip right under the navbar displaying real-time situational stats:
+---
 
-     • "Active Flood Alert: Sector 4 & 9"
+## 🛠️ Tech Stack
 
-     • "Open Demands: 24"
+| Layer | Technology |
+| :--- | :--- |
+| **Frontend Framework** | React 18 / TypeScript / Vite |
+| **Styling & Icons** | Tailwind CSS / Lucide React / Shadcn UI |
+| **Mapping & GIS** | Leaflet / React-Leaflet |
+| **State & Routing** | React Router DOM / Client-side State Stores |
+| **Package Manager** | Bun / npm |
 
-     • "Active Responders: 87"
+---
 
-     • "Avg Response Latency: 12.4 mins"
+## 🚀 Getting Started Locally
 
-3. Hero Section (Operational Command Center style):
+### Prerequisites
+- Node.js (v18+) or Bun installed
+- Git
 
-   - Tagline: A small mono badge: [ CRISIS LOGISTICS & RELIEF DISPATCH ]
+### Installation
 
-   - Main Heading: "Zero-latency coordination for boots on the ground."
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/manviofficial1212-gif/resqconnect.git](https://github.com/manviofficial1212-gif/resqconnect.git)
+   cd resqconnect
 
-   - Subheading: "A synchronized dispatch platform connecting disaster response coordinators, field volunteers, and emergency supply hubs during acute crisis events."
+Install dependencies:
 
-   - Primary CTAs:
+Bash
+npm install
+# or
+bun install
+Start the local development server:
 
-     • Large Red Button: "Request Emergency Supplies (SOS)" (links to /sos)
-
-     - Ghost Bordered Button: "Open Live Operations Map" (links to /map)
-
-   - Interactive Hero Preview: An embedded mockup of the Live Dispatch Board showing realistic incoming SOS cards with tags like [CRITICAL: Clean Water | Sector 4], urgency badges, distance markers (e.g., "1.2 km away"), and real-time "Claim Task" buttons.
-
-4. 4-Column Live Metric Grid:
-
-   - Metric 1: "1,420+" Meals & Rations Dispatched
-
-   - Metric 2: "98.4%" Collision-Free Task Claims
-
-   - Metric 3: "< 15s" PWA Offline Sync Time
-
-   - Metric 4: "100%" Open-Source & Community Driven
-
-5. Core Capabilities (3-Card Bento Grid):
-
-   - Card 1: "Dynamic Urgency Engine" — Visual priority scoring based on criticality (Medical > Water > Food) and volunteer GPS proximity.
-
-   - Card 2: "Zero-Collision Task Locking" — Atomic WebSocket locks preventing duplicate volunteer runs to the same relief drop.
-
-   - Card 3: "Offline-First Field Resilience" — Service workers and IndexedDB caching ensure field workers never lose map routes in network dead zones.
-
-6. Modern Footer:
-
-   - Built for Omnikon National Hackathon 2026. Clean mono links to GitHub repository, disaster hotlines, and system uptime status.
-
-Use Tailwind CSS, Lucide React icons, and dark-mode zinc color tones (#09090b base, #18181b cards, #27272a borders).
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/79bf9468-f1a5-42a9-b0ee-793d28f78cd2).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+Bash
 npm run dev
-```
+# or
+bun dev
+Open in browser:
+Navigate to http://localhost:5173 to explore the live console.
+
+## 🗺️ Application Routes
+/ — Command Landing: Live system metrics, node statistics, and primary emergency dispatch triggers.
+
+/map — Tactical GIS Map: Fullscreen Leaflet map displaying active incident clusters and claim drawers.
+
+/sos — Emergency Intake: Mobile-optimized civilian SOS form with instant GPS locking.
+
+/dispatch — Volunteer Hub: 4-column operations Kanban board for resource allocation.
+
+## 📄 License
+Distributed under the MIT License. See LICENSE for more information.
