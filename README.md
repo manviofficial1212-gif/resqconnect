@@ -67,7 +67,7 @@ Create a .env file in the project root:
 Code snippet
 VITE_GEMINI_API_KEY=AIzaSy...AQ.Ab8RN6I9M3-ksCc-KJ8MKb2RKsWM-0HtvOoFrrtmbg4-s9Yl-A
 ### 4. Start the Dev Server
-Bash
+'''Bash
 npm run dev
 Open http://localhost:8080 in your browser.
 
