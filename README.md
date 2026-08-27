@@ -1,77 +1,84 @@
-# 🚨 ResQConnect Ops — Zero-Latency Disaster Relief & Dispatch Grid
+# 🚨 ResQConnect
 
-> **Synchronized disaster response platform connecting relief coordinators, field rescue squads, and emergency supply hubs during acute crisis events.**
+> **Real-Time Disaster Dispatch & AI-Assisted Ground Coordination Engine**
+
+[![Production Status](https://img.shields.io/badge/Deployment-Live%20on%20Vercel-success?style=flat&logo=vercel)](https://resqconnect-delta.vercel.app)
+[![Tech Stack](https://img.shields.io/badge/Stack-React%2018%20|%20TypeScript%20|%20Tailwind-blue)](https://react.dev/)
+[![AI Engine](https://img.shields.io/badge/AI-Google%20Gemini%202.5%20Flash-orange?logo=google)](https://ai.google.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+
+An intelligent emergency management platform engineered to convert messy, unstructured civilian panic communications into prioritized, conflict-free field rescue missions in real time.
 
 ---
 
-## 📌 Overview
+## 🌐 Live Deployments & Links
 
-During natural disasters (such as floods, cyclones, and urban crises), relief efforts suffer from severe communication bottlenecks: duplicate deliveries, untracked distress calls, and lack of real-time visibility on ground resources.
-
-**ResQConnect** solves this with an interactive, low-latency command grid:
-- **Civilian SOS Intake:** Instant mobile emergency request system with auto-calibrated GPS capture.
-- **Interactive Operations Map:** Real-time geospatial tracking of priority crisis zones with color-coded severity markers.
-- **Volunteer Kanban Hub:** A 4-stage allocation board ensuring single-claim dispatch locking to eliminate duplicate runs.
+* **Live Web App:** [https://resqconnect-delta.vercel.app](https://resqconnect-delta.vercel.app)
+* **Distress Intake Console:** [https://resqconnect-delta.vercel.app/sos](https://resqconnect-delta.vercel.app/sos)
+* **Volunteer Dispatch Hub:** [https://resqconnect-delta.vercel.app/dispatch](https://resqconnect-delta.vercel.app/dispatch)
+* **Live Operations Map:** [https://resqconnect-delta.vercel.app/map](https://resqconnect-delta.vercel.app/map)
+* **GitHub Repository:** [https://github.com/manviofficial1212-gif/resqconnect](https://github.com/manviofficial1212-gif/resqconnect)
 
 ---
 
 ## ⚡ Key Features
 
-* **🛰️ Live Incident Mapping:** Fullscreen interactive GIS map with clustering, urgency filtering (Critical / High / Moderate), and instant sector status.
-* **📍 Fast SOS Broadcast:** Lightweight intake console capturing required aid categories (Medical, Rations, Rescue, Water) and headcount.
-* **🔒 Zero-Collision Dispatch:** Real-time task-locking workflow transitioning tasks from `Open Demands` $\rightarrow$ `Claimed & En Route` $\rightarrow$ `Delivered` $\rightarrow$ `Resolved`.
-* **📱 Ultra-Responsive Tactical Dark UI:** Designed using Tailwind CSS and Zinc dark tokens for high-contrast visibility in low-light emergency environments.
+* 📍 **Mobile GPS Distress Intake (`/sos`)**: One-tap browser coordinate locking, affected headcount counter, and structured relief category tagging (Medical, Water, Food Rations, Boat Evac, Power).
+* 🧠 **Gemini AI Auto-Triage**: Integrates Google's `gemini-2.5-flash` model to analyze chaotic natural-language descriptions into numeric priority scores (1–100), needed supply checklists, and concise operator briefs.
+* 📋 **4-Stage Volunteer Kanban (`/dispatch`)**: Strict stage-based task advancement to eliminate squad collision:
+  1. **Open Demands** (Unassigned live SOS incoming calls)
+  2. **Claimed & En Route** (Assigned & locked to volunteer units)
+  3. **Delivered / Pending Proof** (Awaiting drop verification)
+  4. **Verified & Resolved** (Completed missions)
+* 🗺️ **Live Geospatial Sector Map (`/map`)**: Real-time visual overview of danger zones and supply hubs.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Architecture
 
-| Layer | Technology |
+| Layer | Technologies |
 | :--- | :--- |
-| **Frontend Framework** | React 18 / TypeScript / Vite |
-| **Styling & Icons** | Tailwind CSS / Lucide React / Shadcn UI |
-| **Mapping & GIS** | Leaflet / React-Leaflet |
-| **State & Routing** | React Router DOM / Client-side State Stores |
-| **Package Manager** | Bun / npm |
+| **Frontend Framework** | React 18, TypeScript, TanStack Router |
+| **Styling & Icons** | Tailwind CSS, Lucide React Icons |
+| **AI Intelligence** | Google Gemini 2.5 Flash API (Structured JSON Schema generation) |
+| **Geospatial & Hardware** | HTML5 Geolocation API |
+| **Hosting & Edge Delivery** | Vercel Global Edge Network |
 
 ---
 
-## 🚀 Getting Started Locally
+## 🚀 Local Development Setup
 
 ### Prerequisites
-- Node.js (v18+) or Bun installed
-- Git
+* **Node.js**: v18.0.0 or higher
+* **npm** or **bun**
 
-### Installation
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/manviofficial1212-gif/resqconnect.git](https://github.com/manviofficial1212-gif/resqconnect.git)
+cd resqconnect/resqconnect-ops
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/manviofficial1212-gif/resqconnect.git](https://github.com/manviofficial1212-gif/resqconnect.git)
-   cd resqconnect
-
-Install dependencies:
-
-Bash
+2. Install Dependencies
+''' Bash
 npm install
-# or
-bun install
-Start the local development server:
 
+Set Up Environment Variables
+Create a .env file in the project root:
+
+Code snippet
+VITE_GEMINI_API_KEY=your_google_gemini_api_key_here
+ 4. Start the Dev Server
 Bash
 npm run dev
-# or
-bun dev
-Open in browser:
-Navigate to http://localhost:5173 to explore the live console.
+Open http://localhost:8080 (or the port displayed in your terminal) in your browser.
 
-## 🗺️ Application Routes
-/ — Command Landing: Live system metrics, node statistics, and primary emergency dispatch triggers.
+🗺️ Strategic Roadmap
+[x] Phase 1: Core responsive client, Gemini AI SOS Triage, 4-Stage Kanban board, and Vercel edge deployment.
 
-/map — Tactical GIS Map: Fullscreen Leaflet map displaying active incident clusters and claim drawers.
+[ ] Phase 2: Supabase / PostgreSQL real-time database sync across multi-client volunteer devices.
 
-/sos — Emergency Intake: Mobile-optimized civilian SOS form with instant GPS locking.
+[ ] Phase 3: Multilingual Voice-to-SOS agent for vernacular regional dialects.
 
-/dispatch — Volunteer Hub: 4-column operations Kanban board for resource allocation.
+[ ] Phase 4: Mesh-network and SMS gateway fallback protocols for cellular blackout zones.
 
-## 📄 License
-Distributed under the MIT License. See LICENSE for more information.
+📄 License
+This project is open-source under the MIT License.
