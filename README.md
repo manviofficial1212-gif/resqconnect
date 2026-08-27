@@ -52,26 +52,26 @@ An intelligent emergency management platform engineered to convert messy, unstru
 * **Node.js**: v18.0.0 or higher
 * **npm** or **bun**
 
-### 1. Clone the Repository
+## 1. Clone the Repository
 ```bash
-git clone [https://github.com/manviofficial1212-gif/resqconnect.git](https://github.com/manviofficial1212-gif/resqconnect.git)
+git clone [https://github.com/manviofficial1212-gif/resqconnect.git]
 cd resqconnect/resqconnect-ops
 
-### 2. Install Dependencies
-''' Bash
+2. Install Dependencies
+Bash
 npm install
 
-### Set Up Environment Variables
+3.Set Up Environment Variables
 Create a .env file in the project root:
 
 Code snippet
-VITE_GEMINI_API_KEY=AIzaSy...AQ.Ab8RN6I9M3-ksCc-KJ8MKb2RKsWM-0HtvOoFrrtmbg4-s9Yl-A
-### 4. Start the Dev Server
-'''Bash
+VITE_GEMINI_API_KEY=your_api_key_here
+4. Start the Dev Server
+Bash
 npm run dev
 Open http://localhost:8080 in your browser.
 
-## 🗺️ Strategic Roadmap
+🗺️ Strategic Roadmap
 [x] Phase 1: Core responsive client, Gemini AI SOS Triage, 4-Stage Kanban board, and Vercel edge deployment.
 
 [ ] Phase 2: Supabase / PostgreSQL real-time database sync across multi-client volunteer devices.
@@ -80,5 +80,5 @@ Open http://localhost:8080 in your browser.
 
 [ ] Phase 4: Mesh-network and SMS gateway fallback protocols for cellular blackout zones.
 
-## 📄 License
+📄 License
 This project is open-source under the MIT License.
