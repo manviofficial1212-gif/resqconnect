@@ -122,7 +122,7 @@ function MapPage() {
             {counts.critical} CRITICAL OPEN
           </span>
           <Link
-            to="/"
+            to="/dispatch"
             className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary"
           >
             <LayoutDashboard className="h-4 w-4" />

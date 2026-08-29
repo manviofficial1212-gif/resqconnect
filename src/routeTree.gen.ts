@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DispatchRouteImport } from './routes/dispatch'
+import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as MapRouteImport } from './routes/map'
+import { Route as ProtocolsRouteImport } from './routes/protocols'
 import { Route as SosRouteImport } from './routes/sos'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,9 +26,19 @@ const DispatchRoute = DispatchRouteImport.update({
   path: '/dispatch',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProtocolsRoute = ProtocolsRouteImport.update({
+  id: '/protocols',
+  path: '/protocols',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SosRoute = SosRouteImport.update({
@@ -38,34 +50,49 @@ const SosRoute = SosRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dispatch': typeof DispatchRoute
+  '/inventory': typeof InventoryRoute
   '/map': typeof MapRoute
+  '/protocols': typeof ProtocolsRoute
   '/sos': typeof SosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dispatch': typeof DispatchRoute
+  '/inventory': typeof InventoryRoute
   '/map': typeof MapRoute
+  '/protocols': typeof ProtocolsRoute
   '/sos': typeof SosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dispatch': typeof DispatchRoute
+  '/inventory': typeof InventoryRoute
   '/map': typeof MapRoute
+  '/protocols': typeof ProtocolsRoute
   '/sos': typeof SosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dispatch' | '/map' | '/sos'
+  fullPaths: '/' | '/dispatch' | '/inventory' | '/map' | '/protocols' | '/sos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dispatch' | '/map' | '/sos'
-  id: '__root__' | '/' | '/dispatch' | '/map' | '/sos'
+  to: '/' | '/dispatch' | '/inventory' | '/map' | '/protocols' | '/sos'
+  id:
+    | '__root__'
+    | '/'
+    | '/dispatch'
+    | '/inventory'
+    | '/map'
+    | '/protocols'
+    | '/sos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DispatchRoute: typeof DispatchRoute
+  InventoryRoute: typeof InventoryRoute
   MapRoute: typeof MapRoute
+  ProtocolsRoute: typeof ProtocolsRoute
   SosRoute: typeof SosRoute
 }
 
@@ -85,11 +112,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DispatchRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/map': {
       id: '/map'
       path: '/map'
       fullPath: '/map'
       preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/protocols': {
+      id: '/protocols'
+      path: '/protocols'
+      fullPath: '/protocols'
+      preLoaderRoute: typeof ProtocolsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sos': {
@@ -105,7 +146,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DispatchRoute: DispatchRoute,
+  InventoryRoute: InventoryRoute,
   MapRoute: MapRoute,
+  ProtocolsRoute: ProtocolsRoute,
   SosRoute: SosRoute,
 }
 export const routeTree = rootRouteImport
