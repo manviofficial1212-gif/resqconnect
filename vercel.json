@@ -1,19 +1,4 @@
 {
-  "buildCommand": "vite build",
-  "outputDirectory": ".output/public",
-  "cleanUrls": true,
-  "env": {
-    "NITRO_PRESET": "vercel"
-  },
-  "build": {
-    "env": {
-      "NITRO_PRESET": "vercel"
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "buildCommand": "npm run build",
+  "outputDirectory": ".output/public"
 }
