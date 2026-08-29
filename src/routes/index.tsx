@@ -140,12 +140,14 @@ function LiveDot({ className = "" }: { className?: string }) {
 }
 
 function Index() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background font-sans text-foreground antialiased">
       {/* NAV */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-5">
-          <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-surface">
               <Radar className="h-4 w-4 text-primary" strokeWidth={2.2} />
             </div>
@@ -154,37 +156,71 @@ function Index() {
               <LiveDot />
               LIVE DISPATCH SYSTEM ACTIVE
             </span>
-          </div>
+          </Link>
 
           <nav className="mx-auto hidden items-center gap-1 md:flex">
             {navLinks.map((l) => (
-              <a
+              <Link
                 key={l.label}
-                href={l.to}
+                to={l.to}
                 className="rounded-md px-3 py-2 text-[13px] text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               >
                 {l.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
           <div className="ml-auto flex items-center gap-2 md:ml-0">
-            <a
-              href="/volunteers"
+            <Link
+              to="/dispatch"
               className="hidden rounded-md border border-border bg-surface px-3.5 py-2 text-[13px] font-medium text-foreground transition-colors hover:bg-secondary sm:inline-block"
             >
               Volunteer Portal
-            </a>
+            </Link>
             <Link
               to="/sos"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-3.5 py-2 text-[13px] font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Siren className="h-4 w-4" />
-              Report Emergency (SOS)
+              <span className="hidden xs:inline sm:inline">Report Emergency (SOS)</span>
+              <span className="sm:hidden">SOS</span>
             </Link>
+            <button
+              type="button"
+              aria-label="Toggle navigation menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((o) => !o)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-surface text-foreground md:hidden"
+            >
+              {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
           </div>
         </div>
+
+        {menuOpen && (
+          <nav className="border-t border-border bg-background px-5 py-3 md:hidden">
+            {navLinks.map((l) => (
+              <Link
+                key={l.label}
+                to={l.to}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2.5 rounded-md px-2 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              >
+                <l.icon className="h-4 w-4" />
+                {l.label}
+              </Link>
+            ))}
+            <Link
+              to="/dispatch"
+              onClick={() => setMenuOpen(false)}
+              className="mt-2 flex items-center gap-2.5 rounded-md border border-border bg-surface px-2 py-2.5 text-sm font-medium"
+            >
+              <Users className="h-4 w-4" /> Volunteer Portal
+            </Link>
+          </nav>
+        )}
       </header>
+
 
       {/* TICKER */}
       <div className="overflow-hidden border-b border-border bg-surface">
