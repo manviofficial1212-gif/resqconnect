@@ -340,8 +340,9 @@ function Index() {
                         <Gauge className="h-3.5 w-3.5" />
                         PRIORITY SCORE {c.tone === "critical" ? "9.4" : c.tone === "urgent" ? "7.8" : "4.2"}
                       </div>
-                      <button
-                        type="button"
+                      <Link
+                        to="/dispatch"
+                        aria-label={`Claim task ${c.id} and open dispatch board`}
                         className={
                           c.tone === "critical"
                             ? "rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90"
@@ -349,7 +350,8 @@ function Index() {
                         }
                       >
                         Claim Task
-                      </button>
+                      </Link>
+
                     </div>
                   </article>
                 ))}
