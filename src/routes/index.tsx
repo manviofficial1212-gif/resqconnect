@@ -386,12 +386,13 @@ function Index() {
                   Built for the first 72 hours.
                 </h2>
               </div>
-              <a
-                href="/protocols"
+              <Link
+                to="/protocols"
                 className="inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.1em] text-muted-foreground transition-colors hover:text-foreground"
               >
                 READ PROTOCOL DOCS <ArrowUpRight className="h-3.5 w-3.5" />
-              </a>
+              </Link>
+
             </div>
 
             <div className="mt-10 grid gap-4 lg:grid-cols-3">
