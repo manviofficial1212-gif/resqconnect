@@ -447,10 +447,11 @@ function Index() {
             <a href="tel:112" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
               <Phone className="h-3.5 w-3.5" /> DISASTER HOTLINE 112
             </a>
-            <a href="/status" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
+            <Link to="/map" className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground">
               <Activity className="h-3.5 w-3.5" /> SYSTEM STATUS
               <LiveDot className="ml-1" />
-            </a>
+            </Link>
+
           </nav>
         </div>
         <p className="mt-8 border-t border-border pt-6 font-mono text-[11px] tracking-[0.08em] text-muted-foreground">
