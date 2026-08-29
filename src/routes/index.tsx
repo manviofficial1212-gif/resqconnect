@@ -43,10 +43,11 @@ export const Route = createFileRoute("/")({
 
 const navLinks = [
   { label: "Live SOS Map", to: "/map", icon: MapIcon },
-  { label: "Volunteer Hub", to: "/volunteers", icon: Users },
+  { label: "Volunteer Hub", to: "/dispatch", icon: Users },
   { label: "Inventory Tracker", to: "/inventory", icon: Boxes },
   { label: "Protocol Docs", to: "/protocols", icon: FileText },
-];
+] as const;
+
 
 const tickerItems = [
   "ACTIVE FLOOD ALERT: SECTOR 4 & 9",
