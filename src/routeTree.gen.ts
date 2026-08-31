@@ -15,7 +15,7 @@ import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as ProtocolsRouteImport } from './routes/protocols'
 import { Route as SosRouteImport } from './routes/sos'
-import { Route as VolunteerRouteImport } from './routes/volunteer'
+import { Route as VolunteersRouteImport } from './routes/volunteers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,9 +47,9 @@ const SosRoute = SosRouteImport.update({
   path: '/sos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VolunteerRoute = VolunteerRouteImport.update({
-  id: '/volunteer',
-  path: '/volunteer',
+const VolunteersRoute = VolunteersRouteImport.update({
+  id: '/volunteers',
+  path: '/volunteers',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -60,7 +60,7 @@ export interface FileRoutesByFullPath {
   '/map': typeof MapRoute
   '/protocols': typeof ProtocolsRoute
   '/sos': typeof SosRoute
-  '/volunteer': typeof VolunteerRoute
+  '/volunteers': typeof VolunteersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +69,7 @@ export interface FileRoutesByTo {
   '/map': typeof MapRoute
   '/protocols': typeof ProtocolsRoute
   '/sos': typeof SosRoute
-  '/volunteer': typeof VolunteerRoute
+  '/volunteers': typeof VolunteersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +79,7 @@ export interface FileRoutesById {
   '/map': typeof MapRoute
   '/protocols': typeof ProtocolsRoute
   '/sos': typeof SosRoute
-  '/volunteer': typeof VolunteerRoute
+  '/volunteers': typeof VolunteersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,7 +90,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/protocols'
     | '/sos'
-    | '/volunteer'
+    | '/volunteers'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,7 +99,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/protocols'
     | '/sos'
-    | '/volunteer'
+    | '/volunteers'
   id:
     | '__root__'
     | '/'
@@ -108,7 +108,7 @@ export interface FileRouteTypes {
     | '/map'
     | '/protocols'
     | '/sos'
-    | '/volunteer'
+    | '/volunteers'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,7 +118,7 @@ export interface RootRouteChildren {
   MapRoute: typeof MapRoute
   ProtocolsRoute: typeof ProtocolsRoute
   SosRoute: typeof SosRoute
-  VolunteerRoute: typeof VolunteerRoute
+  VolunteersRoute: typeof VolunteersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,11 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/volunteer': {
-      id: '/volunteer'
-      path: '/volunteer'
-      fullPath: '/volunteer'
-      preLoaderRoute: typeof VolunteerRouteImport
+    '/volunteers': {
+      id: '/volunteers'
+      path: '/volunteers'
+      fullPath: '/volunteers'
+      preLoaderRoute: typeof VolunteersRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -182,7 +182,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapRoute: MapRoute,
   ProtocolsRoute: ProtocolsRoute,
   SosRoute: SosRoute,
-  VolunteerRoute: VolunteerRoute,
+  VolunteersRoute: VolunteersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
