@@ -156,3 +156,51 @@ export function statusLine(i: Incident): string {
   if (i.status === "high") return `[HIGH: ${i.tag}]`;
   return `[IN TRANSIT: ${i.tag}]`;
 }
+const STORAGE_KEY = 'resqconnect_incidents';
+
+export function getStoredIncidents(): Incident[] {
+  if (typeof window === 'undefined') return INITIAL_INCIDENTS;
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_INCIDENTS));
+    return INITIAL_INCIDENTS;
+  }
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return INITIAL_INCIDENTS;
+  }
+}
+
+export function addIncident(newIncident: Omit<Incident, 'id' | 'elapsedMin' | 'assigned'>): Incident {
+  const incidents = getStoredIncidents();
+  const created: Incident = {
+    ...newIncident,
+    id: `SOS-${Math.floor(2300 + Math.random() * 900)}`,
+    elapsedMin: 0,
+    assigned: false,
+  };
+  const updated = [created, ...incidents];
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return created;
+}
+
+export function updateIncidentStatus(id: string, status: IncidentStatus, unit?: string): Incident[] {
+  const incidents = getStoredIncidents();
+  const updated: Incident[] = incidents.map((item) => {
+    if (item.id === id) {
+      const updatedItem: Incident = {
+        ...item,
+        status,
+        assigned: status === 'transit' ? true : item.assigned,
+      };
+      if (unit !== undefined) {
+        updatedItem.unit = unit;
+      }
+      return updatedItem;
+    }
+    return item;
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return updated;
+}
