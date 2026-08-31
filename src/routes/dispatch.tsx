@@ -1,301 +1,241 @@
-import React, { useState } from 'react';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import {
-  Kanban,
-  MapPin,
-  Users,
-  CheckCircle2,
-  Clock,
-  Truck,
-  ShieldAlert,
-  ArrowRight,
-  Filter,
-  Check,
-  ChevronRight,
-  Map as MapIcon,
-} from 'lucide-react';
+import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Radar, Map as MapIcon, Lock, ArrowRight, CheckCircle2, Package } from "lucide-react";
 
-export const Route = createFileRoute('/dispatch')({
-  component: DispatchRoute,
+export const Route = createFileRoute("/dispatch")({
+  head: () => ({
+    meta: [
+      { title: "Volunteer Kanban Operations Hub — ResQConnect" },
+      {
+        name: "description",
+        content:
+          "Claim, lock and track relief tasks across open demands, en-route dispatch, delivery proof and verified resolutions.",
+      },
+      { property: "og:title", content: "Volunteer Kanban Operations Hub — ResQConnect" },
+      {
+        property: "og:description",
+        content: "Claim and track relief tasks across the ResQConnect dispatch workflow.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: DispatchPage,
 });
 
-type CardStatus = 'open' | 'en_route' | 'delivered' | 'verified';
+type Stage = "open" | "enroute" | "proof" | "verified";
+type Priority = "critical" | "high" | "moderate";
 
-interface TaskCard {
+interface Task {
   id: string;
-  title: string;
-  category: string;
-  categoryIcon: string;
-  location: string;
-  distance: string;
-  headcount: number;
-  priority: 'Critical' | 'High' | 'Moderate';
-  status: CardStatus;
-  assignee?: string;
-  timeAgo: string;
+  priority: Priority;
+  items: string;
+  distanceKm: number;
+  score: number;
+  stage: Stage;
+  unit?: string;
 }
 
-const INITIAL_TASKS: TaskCard[] = [
-  {
-    id: 'SOS-8412',
-    title: 'Elderly trapped on 2nd floor, rising water',
-    category: 'Rescue Evacuation',
-    categoryIcon: '🚤',
-    location: 'Sector 4, North Bund',
-    distance: '1.2 km away',
-    headcount: 4,
-    priority: 'Critical',
-    status: 'open',
-    timeAgo: '4m ago',
-  },
-  {
-    id: 'SOS-7104',
-    title: 'Clean drinking water & infant formula needed',
-    category: 'Drinking Water',
-    categoryIcon: '💧',
-    location: 'Community Center, Ward 12',
-    distance: '2.8 km away',
-    headcount: 12,
-    priority: 'High',
-    status: 'open',
-    timeAgo: '11m ago',
-  },
-  {
-    id: 'SOS-6291',
-    title: 'First aid kits & insulin supplies',
-    category: 'Medical Kits',
-    categoryIcon: '🩹',
-    location: 'Bridge Junction, Block B',
-    distance: '0.8 km away',
-    headcount: 2,
-    priority: 'Critical',
-    status: 'en_route',
-    assignee: 'Squad 3 (Boat Unit)',
-    timeAgo: '22m ago',
-  },
-  {
-    id: 'SOS-5140',
-    title: 'Emergency rations & dry blankets drop',
-    category: 'Food Rations',
-    categoryIcon: '🍞',
-    location: 'Shelter Base 2',
-    distance: '3.4 km away',
-    headcount: 25,
-    priority: 'Moderate',
-    status: 'delivered',
-    assignee: 'Rapid Volunteer Team A',
-    timeAgo: '45m ago',
-  },
-  {
-    id: 'SOS-4902',
-    title: 'Generator fuel & solar charging bank',
-    category: 'Power Supply',
-    categoryIcon: '⚡',
-    location: 'Sector 9 Primary Clinic',
-    distance: '4.1 km away',
-    headcount: 50,
-    priority: 'High',
-    status: 'verified',
-    assignee: 'Civil Defense Core',
-    timeAgo: '1h 10m ago',
-  },
+const COLUMNS: { id: Stage; title: string; hint: string }[] = [
+  { id: "open", title: "Open Demands", hint: "UNCLAIMED SOS CALLS" },
+  { id: "enroute", title: "Claimed & En Route", hint: "VOLUNTEERS DISPATCHED" },
+  { id: "proof", title: "Delivered / Pending Proof", hint: "AWAITING DROP VERIFICATION" },
+  { id: "verified", title: "Verified & Resolved", hint: "CLOSED THIS CYCLE" },
 ];
 
-const COLUMNS: { id: CardStatus; title: string; subtitle: string; color: string; badgeBg: string }[] = [
-  { id: 'open', title: 'Open Demands', subtitle: 'Unassigned live SOS calls', color: 'border-red-500/40 text-red-400', badgeBg: 'bg-red-950/60 border-red-800 text-red-400' },
-  { id: 'en_route', title: 'Claimed & En Route', subtitle: 'Assigned to field squads', color: 'border-amber-500/40 text-amber-400', badgeBg: 'bg-amber-950/60 border-amber-800 text-amber-400' },
-  { id: 'delivered', title: 'Delivered / Pending Proof', subtitle: 'Awaiting drop verification', color: 'border-blue-500/40 text-blue-400', badgeBg: 'bg-blue-950/60 border-blue-800 text-blue-400' },
-  { id: 'verified', title: 'Verified & Resolved', subtitle: 'Mission accomplished', color: 'border-emerald-500/40 text-emerald-400', badgeBg: 'bg-emerald-950/60 border-emerald-800 text-emerald-400' },
+const PRIORITY_STYLE: Record<Priority, string> = {
+  critical: "border-primary/60 bg-primary/12 text-primary",
+  high: "border-warn/50 bg-warn/12 text-warn",
+  moderate: "border-info/50 bg-info/12 text-info",
+};
+
+const INITIAL: Task[] = [
+  { id: "SOS-2291", priority: "critical", items: "Insulin, trauma kits, ORS ×120", distanceKm: 1.2, score: 9.4, stage: "open" },
+  { id: "SOS-2290", priority: "critical", items: "200L potable water, purification tabs", distanceKm: 2.6, score: 9.1, stage: "open" },
+  { id: "SOS-2288", priority: "high", items: "Dry rations ×210, baby formula", distanceKm: 3.8, score: 7.8, stage: "open" },
+  { id: "SOS-2284", priority: "high", items: "Rice sacks ×40, cooking oil ×20L", distanceKm: 6.4, score: 7.1, stage: "open" },
+  { id: "SOS-2278", priority: "moderate", items: "Tarpaulin ×30, blankets ×90", distanceKm: 8.1, score: 4.2, stage: "open" },
+  { id: "SOS-2282", priority: "high", items: "Water 100L, rations ×45", distanceKm: 2.1, score: 7.4, stage: "enroute", unit: "UNIT K-7" },
+  { id: "SOS-2280", priority: "critical", items: "Med kits ×12, tarpaulin ×10", distanceKm: 4.4, score: 8.9, stage: "enroute", unit: "UNIT C-2" },
+  { id: "SOS-2271", priority: "moderate", items: "Rations ×75, med kits ×6", distanceKm: 5.9, score: 3.8, stage: "proof", unit: "UNIT A-4" },
+  { id: "SOS-2264", priority: "high", items: "Water 300L, ORS ×80", distanceKm: 7.2, score: 6.6, stage: "proof", unit: "UNIT B-1" },
+  { id: "SOS-2251", priority: "critical", items: "Oxygen concentrator ×2", distanceKm: 3.1, score: 9.6, stage: "verified", unit: "UNIT D-9" },
+  { id: "SOS-2248", priority: "moderate", items: "Blankets ×120", distanceKm: 9.5, score: 3.1, stage: "verified", unit: "UNIT K-7" },
 ];
 
-function DispatchRoute() {
-  const [tasks, setTasks] = useState<TaskCard[]>(INITIAL_TASKS);
-  const [filterPriority, setFilterPriority] = useState<string>('All');
+const NEXT: Record<Stage, Stage | null> = {
+  open: "enroute",
+  enroute: "proof",
+  proof: "verified",
+  verified: null,
+};
 
-  const advanceTask = (id: string) => {
-    setTasks((prev) =>
-      prev.map((t) => {
-        if (t.id !== id) return t;
-        if (t.status === 'open') return { ...t, status: 'en_route', assignee: 'Volunteer You (Claimed)' };
-        if (t.status === 'en_route') return { ...t, status: 'delivered' };
-        if (t.status === 'delivered') return { ...t, status: 'verified' };
-        return t;
-      })
+const ACTION: Record<Stage, string> = {
+  open: "Claim & Lock Task",
+  enroute: "Mark Delivered",
+  proof: "Verify Drop",
+  verified: "Resolved",
+};
+
+function DispatchPage() {
+  const [tasks, setTasks] = useState<Task[]>(INITIAL);
+  const [filter, setFilter] = useState<"all" | Priority>("all");
+  const [dragId, setDragId] = useState<string | null>(null);
+
+  const visible = useMemo(
+    () => (filter === "all" ? tasks : tasks.filter((t) => t.priority === filter)),
+    [tasks, filter],
+  );
+
+  const move = (id: string, stage: Stage) =>
+    setTasks((all) =>
+      all.map((t) =>
+        t.id === id
+          ? { ...t, stage, unit: t.unit ?? `UNIT ${String.fromCharCode(65 + (id.charCodeAt(6) % 20))}-${id.slice(-1)}` }
+          : t,
+      ),
     );
+
+  const advance = (t: Task) => {
+    const next = NEXT[t.stage];
+    if (next) move(t.id, next);
   };
 
-  const filteredTasks = tasks.filter((t) => {
-    if (filterPriority === 'All') return true;
-    return t.priority === filterPriority;
-  });
+  const filters: { id: "all" | Priority; label: string }[] = [
+    { id: "all", label: "ALL" },
+    { id: "critical", label: "CRITICAL" },
+    { id: "high", label: "HIGH" },
+    { id: "moderate", label: "MODERATE" },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 font-sans flex flex-col">
-      {/* Top Header Bar */}
-      <header className="border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur px-5 py-4">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-950/80 border border-red-500/40 flex items-center justify-center text-red-400">
-              <Kanban className="w-5 h-5" />
+    <div className="min-h-screen bg-background font-sans text-foreground">
+      <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-3 px-5 py-3">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface">
+              <Radar className="h-3.5 w-3.5 text-primary" />
             </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                Volunteer Dispatch Board
-                <span className="text-xs font-mono bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full">
-                  LIVE SYNC
-                </span>
-              </h1>
-              <p className="text-xs text-zinc-400">4-Stage zero-collision coordination hub for boots on the ground.</p>
-            </div>
+            <span className="text-sm font-semibold tracking-tight">ResQConnect</span>
+          </Link>
+          <span className="hidden font-mono text-[11px] tracking-[0.12em] text-muted-foreground sm:inline">
+            / VOLUNTEER OPS HUB
+          </span>
+
+          <div className="ml-auto flex items-center gap-1 rounded-md border border-border bg-surface p-1">
+            {filters.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setFilter(f.id)}
+                className={`rounded px-2.5 py-1.5 font-mono text-[10px] tracking-[0.1em] transition-colors ${
+                  filter === f.id
+                    ? "bg-secondary text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
           </div>
 
-          <div className="flex items-center gap-2.5">
-            {/* Quick Priority Filter */}
-            <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-1 gap-1 text-xs">
-              <Filter className="w-3.5 h-3.5 text-zinc-500 mr-1" />
-              {['All', 'Critical', 'High'].map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setFilterPriority(p)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono transition ${
-                    filterPriority === p ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
-            </div>
-
-            <Link
-              to="/map"
-              className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-medium px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition"
-            >
-              <MapIcon className="w-3.5 h-3.5 text-red-400" />
-              Switch to Live Map
-            </Link>
-
-            <Link
-              to="/sos"
-              className="bg-red-600 hover:bg-red-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition shadow-lg shadow-red-950"
-            >
-              + Submit SOS
-            </Link>
-          </div>
+          <Link
+            to="/map"
+            className="inline-flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-2 text-[13px] font-medium transition-colors hover:bg-secondary"
+          >
+            <MapIcon className="h-4 w-4" /> Live SOS Map
+          </Link>
         </div>
       </header>
 
-      {/* 4-Column Kanban Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-start">
+      <main className="mx-auto max-w-[1600px] px-5 py-6">
+        <h1 className="sr-only">Volunteer Kanban Operations Hub</h1>
+        <div className="grid gap-4 lg:grid-cols-4">
           {COLUMNS.map((col) => {
-            const columnTasks = filteredTasks.filter((t) => t.status === col.id);
+            const items = visible.filter((t) => t.stage === col.id);
             return (
-              <div
+              <section
                 key={col.id}
-                className="bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-3.5 flex flex-col gap-3 min-h-[500px]"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => {
+                  if (dragId) move(dragId, col.id);
+                  setDragId(null);
+                }}
+                className="panel flex flex-col rounded-xl"
               >
-                {/* Column Title */}
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5 px-1">
-                  <div>
-                    <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-zinc-200">
-                      {col.title}
-                    </h2>
-                    <p className="text-[11px] text-zinc-500">{col.subtitle}</p>
+                <div className="border-b border-border px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-[13px] font-semibold tracking-tight">{col.title}</h2>
+                    <span className="font-mono text-[11px] text-muted-foreground">{items.length}</span>
                   </div>
-                  <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded-full border ${col.badgeBg}`}>
-                    {columnTasks.length}
-                  </span>
+                  <p className="mt-1 font-mono text-[10px] tracking-[0.12em] text-muted-foreground">
+                    {col.hint}
+                  </p>
                 </div>
-
-                {/* Cards List */}
-                <div className="space-y-2.5">
-                  {columnTasks.map((task) => (
-                    <div
-                      key={task.id}
-                      className="bg-zinc-950 border border-zinc-800/90 hover:border-zinc-700 rounded-xl p-3.5 space-y-3 transition group shadow-sm"
+                <div className="flex-1 space-y-3 p-3">
+                  {items.length === 0 && (
+                    <p className="rounded-md border border-dashed border-border px-3 py-6 text-center font-mono text-[10px] tracking-[0.1em] text-muted-foreground">
+                      NO TASKS
+                    </p>
+                  )}
+                  {items.map((t) => (
+                    <article
+                      key={t.id}
+                      draggable
+                      onDragStart={() => setDragId(t.id)}
+                      onDragEnd={() => setDragId(null)}
+                      className="cursor-grab rounded-lg border border-border bg-surface p-3.5 transition-colors hover:border-muted-foreground/40 active:cursor-grabbing"
                     >
-                      {/* Card Header: Category & Priority */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-zinc-300 flex items-center gap-1.5">
-                          <span>{task.categoryIcon}</span> {task.category}
-                        </span>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[11px] text-muted-foreground">{t.id}</span>
                         <span
-                          className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold border ${
-                            task.priority === 'Critical'
-                              ? 'bg-red-950/80 border-red-800 text-red-400'
-                              : task.priority === 'High'
-                              ? 'bg-amber-950/80 border-amber-800 text-amber-400'
-                              : 'bg-zinc-900 border-zinc-700 text-zinc-400'
+                          className={`rounded border px-1.5 py-0.5 font-mono text-[9px] tracking-[0.08em] ${PRIORITY_STYLE[t.priority]}`}
+                        >
+                          {t.priority.toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="mt-2 flex items-start gap-2 text-[13px] leading-snug">
+                        <Package className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        {t.items}
+                      </p>
+                      <div className="mt-3 flex items-center justify-between font-mono text-[10px] tracking-[0.08em] text-muted-foreground">
+                        <span>{t.distanceKm.toFixed(1)} km away</span>
+                        <span>SCORE {t.score.toFixed(1)}</span>
+                      </div>
+                      {t.unit && (
+                        <p className="mt-1 font-mono text-[10px] tracking-[0.08em] text-signal">
+                          {t.unit}
+                        </p>
+                      )}
+                      {t.stage !== "verified" ? (
+                        <button
+                          type="button"
+                          onClick={() => advance(t)}
+                          className={`mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold transition-opacity hover:opacity-90 ${
+                            t.stage === "open"
+                              ? "bg-primary text-primary-foreground"
+                              : "border border-border bg-card text-foreground"
                           }`}
                         >
-                          {task.priority}
-                        </span>
-                      </div>
-
-                      {/* Card Details */}
-                      <p className="text-xs font-medium text-zinc-200 leading-snug">{task.title}</p>
-
-                      {/* Card Meta Stats */}
-                      <div className="space-y-1 text-[11px] font-mono text-zinc-400 border-t border-zinc-900 pt-2">
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1 truncate text-zinc-400">
-                            <MapPin className="w-3 h-3 text-red-500 shrink-0" />
-                            {task.location}
-                          </span>
-                          <span className="text-zinc-500">{task.distance}</span>
-                        </div>
-                        <div className="flex items-center justify-between pt-0.5">
-                          <span className="flex items-center gap-1 text-zinc-400">
-                            <Users className="w-3 h-3 text-blue-400 shrink-0" />
-                            {task.headcount} Affected
-                          </span>
-                          <span className="text-zinc-600 flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {task.timeAgo}
-                          </span>
-                        </div>
-                        {task.assignee && (
-                          <div className="text-[10px] text-amber-400 font-sans pt-1 flex items-center gap-1">
-                            <Truck className="w-3 h-3" /> {task.assignee}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Button to Advance Stage */}
-                      {task.status !== 'verified' && (
-                        <button
-                          onClick={() => advanceTask(task.id)}
-                          className="w-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-zinc-200 text-xs font-semibold py-2 rounded-lg flex items-center justify-center gap-1.5 transition mt-1"
-                        >
-                          {task.status === 'open' && (
-                            <>
-                              Claim & Lock Task <ChevronRight className="w-3.5 h-3.5 text-red-400" />
-                            </>
+                          {t.stage === "open" ? (
+                            <Lock className="h-3.5 w-3.5" />
+                          ) : (
+                            <ArrowRight className="h-3.5 w-3.5" />
                           )}
-                          {task.status === 'en_route' && (
-                            <>
-                              Mark Drop Delivered <Truck className="w-3.5 h-3.5 text-amber-400" />
-                            </>
-                          )}
-                          {task.status === 'delivered' && (
-                            <>
-                              Verify & Close Case <Check className="w-3.5 h-3.5 text-emerald-400" />
-                            </>
-                          )}
+                          {ACTION[t.stage]}
                         </button>
+                      ) : (
+                        <div className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-signal/40 bg-signal/10 px-3 py-2 font-mono text-[10px] tracking-[0.1em] text-signal">
+                          <CheckCircle2 className="h-3.5 w-3.5" /> VERIFIED
+                        </div>
                       )}
-                    </div>
+                    </article>
                   ))}
-
-                  {columnTasks.length === 0 && (
-                    <div className="text-center py-8 text-zinc-600 text-xs font-mono border border-dashed border-zinc-800/60 rounded-xl">
-                      No active tasks
-                    </div>
-                  )}
                 </div>
-              </div>
+              </section>
             );
           })}
-        </div>  
+        </div>
       </main>
     </div>
   );
